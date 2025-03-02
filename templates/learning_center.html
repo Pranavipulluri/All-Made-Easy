@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Learning Center | Community App{% endblock %}
+{% block additional_head %}
+<style>
+   /* learning_center.css */
+
+.learning-center-page {
+    padding: 20px;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    color: #777;
+}
+
+.resource-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.resource-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+}
+
+.resource-card img {
+    width: 100%;
+    height: auto;
+}
+
+.resource-card h3 {
+    font-size: 1.5rem;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.resource-card p {
+    font-size: 1rem;
+    color: #777;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.resource-card .btn {
+    display: block;
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+}
+
+.resource-card .btn:hover {
+    background-color: #0056b3;
+}
+
+</style>
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/learning_center.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container learning-center-page">
+    <div class="page-header">
+        <h1><i class="fas fa-book"></i> Learning Center</h1>
+        <p>Explore a variety of resources to enhance your skills and knowledge.</p>
+    </div>
+
+    <div class="resource-sections">
+        <div class="section">
+            <h2 class="section-title">Courses</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <img src="{{ url_for('static', filename='images/course1.jpg') }}" alt="Course 1">
+                    <h3>Introduction to Python</h3>
+                    <p>Learn the basics of Python programming.</p>
+                    <a href="#" class="btn btn-primary">Start Course</a>
+                </div>
+                <div class="resource-card">
+                    <img src="{{ url_for('static', filename='images/course2.jpg') }}" alt="Course 2">
+                    <h3>Web Development Fundamentals</h3>
+                    <p>Get started with HTML, CSS, and JavaScript.</p>
+                    <a href="#" class="btn btn-primary">Start Course</a>
+                </div>
+                <!-- Add more course cards as needed -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Articles</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <img src="{{ url_for('static', filename='images/article1.jpg') }}" alt="Article 1">
+                    <h3>Top 10 Tips for Learning Python</h3>
+                    <p>Discover effective strategies to master Python.</p>
+                    <a href="#" class="btn btn-primary">Read Article</a>
+                </div>
+                <div class="resource-card">
+                    <img src="{{ url_for('static', filename='images/article2.jpg') }}" alt="Article 2">
+                    <h3>The Future of Web Development</h3>
+                    <p>Explore the latest trends in web development.</p>
+                    <a href="#" class="btn btn-primary">Read Article</a>
+                </div>
+                <!-- Add more article cards as needed -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Videos</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <img src="{{ url_for('static', filename='images/video1.jpg') }}" alt="Video 1">
+                    <h3>Python Tutorial for Beginners</h3>
+                    <p>Watch a comprehensive tutorial on Python programming.</p>
+                    <a href="#" class="btn btn-primary">Watch Video</a>
+                </div>
+                <div class="resource-card">
+                    <img src="{{ url_for('static', filename='images/video2.jpg') }}" alt="Video 2">
+                    <h3>Building a Responsive Website</h3>
+                    <p>Learn how to create a responsive website using HTML and CSS.</p>
+                    <a href="#" class="btn btn-primary">Watch Video</a>
+                </div>
+                <!-- Add more video cards as needed -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

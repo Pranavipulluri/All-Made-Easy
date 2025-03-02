@@ -1,0 +1,193 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar .profile {
+    text-align: center;
+}
+
+.sidebar .profile img {
+    width: 100px;
+    border-radius: 50%;
+}
+
+.sidebar .nav-menu {
+    margin-top: 20px;
+}
+
+.sidebar .nav-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar .nav-menu a.active {
+    background-color: #ddd;
+    font-weight: bold;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+
+
+/* Main Content Styles */
+#main-content {
+    margin-left: 260px;
+    padding: 20px;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.action-buttons button {
+    margin-right: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+}
+.action-buttons button:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+#closeModalBtn {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+#closeModalBtn:hover,
+#closeModalBtn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+form input[type="file"] {
+    margin-bottom: 15px;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Content Item Styles */
+.content-item {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+}
+
+.content-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.content-description {
+    margin-top: 10px;
+}
+
+.content-actions {
+    margin-top: 10px;
+}
+
+.content-actions button {
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+
+/* Adjust the image size of the content */
+.content-item img {
+    width: 100%;
+    max-width: 300px; /* Limit the maximum width */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure the image fills the container */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    margin-bottom: 10px; /* Space below the image */
+}

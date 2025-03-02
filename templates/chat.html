@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Chat with {{ receiver.username }} | Community App{% endblock %}
+
+{% block additional_head %}
+<style>
+    .chat-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .page-title {
+        margin-bottom: 30px;
+        font-size: 28px;
+        color: #333;
+        border-bottom: 2px solid #4a6fdc;
+        padding-bottom: 10px;
+    }
+    .chat-header {
+        display: flex;
+        align-items: center;
+        background-color: #4a6fdc;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px 8px 0 0;
+    }
+    .chat-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+        border: 2px solid white;
+    }
+    .chat-username {
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .back-button {
+        margin-right: 15px;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+    .chat-box {
+        background-color: #fff;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        height: 600px;
+    }
+    .messages-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .message {
+        max-width: 70%;
+        padding: 12px 15px;
+        border-radius: 18px;
+        position: relative;
+        word-wrap: break-word;
+    }
+    .message-received {
+        align-self: flex-start;
+        background-color: #f1f0f0;
+        border-bottom-left-radius: 5px;
+    }
+    .message-sent {
+        align-self: flex-end;
+        background-color: #4a6fdc;
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+    .message-time {
+        font-size: 11px;
+        color: #999;
+        margin-top: 5px;
+        text-align: right;
+    }
+    .message-sent .message-time {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    .chat-form {
+        display: flex;
+        padding: 15px;
+        border-top: 1px solid #eee;
+    }
+    .chat-input {
+        flex-grow: 1;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 24px;
+        font-size: 15px;
+        outline: none;
+    }
+    .chat-input:focus {
+        border-color: #4a6fdc;
+    }
+    .send-button {
+        background-color: #4a6fdc;
+        color: white;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        margin-left: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .send-button:hover {
+        background-color: #3a5dc0;
+    }
+    .no-messages {
+        text-align: center;
+        margin: auto;
+        color: #888;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <a href="{{ url_for('chat_list') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <img src="{{ url_for('static', filename='uploads/' + receiver.profile_pic) if receiver.profile_pic else url_for('static', filename='img/default_profile.jpg') }}" alt="{{ receiver.username }}" class="chat-avatar">
+        <div class="chat-username">{{ receiver.username }}</div>
+    </div>
+
+    <div class="chat-box">
+        <div class="messages-container" id="messages-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.sender_id == session.user_id %}message-sent{% else %}message-received{% endif %}">
+                        {{ message.content }}
+                        <div class="message-time">{{ message.timestamp.strftime('%I:%M %p | %b %d') }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-messages">
+                    <i class="fas fa-comments fa-3x"></i>
+                    <h3>No messages yet</h3>
+                    <p>Start the conversation by sending a message!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <form class="chat-form" method="POST" action="{{ url_for('send_message') }}">
+            <input type="hidden" name="receiver_id" value="{{ receiver.id }}">
+            <input type="text" class="chat-input" name="content" placeholder="Type your message..." required autocomplete="off">
+            <button type="submit" class="send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Scroll to bottom of messages on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const messagesContainer = document.getElementById('messages-container');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    });
+</script>
+{% endblock %}

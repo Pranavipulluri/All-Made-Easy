@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Chat | Community App{% endblock %}
+
+{% block additional_head %}
+<style>
+    .chat-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .page-title {
+        margin-bottom: 30px;
+        font-size: 28px;
+        color: #333;
+        border-bottom: 2px solid #4a6fdc;
+        padding-bottom: 10px;
+    }
+    .chat-layout {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 25px;
+    }
+    .chat-sidebar {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .sidebar-title {
+        padding: 15px 20px;
+        background-color: #4a6fdc;
+        color: white;
+        font-size: 18px;
+    }
+    .chat-users {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    .chat-user {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .chat-user:hover {
+        background-color: #f6f6f6;
+    }
+    .chat-user.active {
+        background-color: #f0f4fd;
+        border-left: 4px solid #4a6fdc;
+    }
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 12px;
+    }
+    .user-info {
+        flex-grow: 1;
+    }
+    .user-name {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 3px;
+    }
+    .new-chat {
+        padding: 20px;
+    }
+    .new-chat-title {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    .user-select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+    .btn-start-chat {
+        width: 100%;
+        padding: 10px;
+        background-color: #4a6fdc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: background-color 0.3s;
+    }
+    .btn-start-chat:hover {
+        background-color: #3a5dc0;
+    }
+    .chat-placeholder {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
+    .placeholder-icon {
+        font-size: 60px;
+        color: #4a6fdc;
+        margin-bottom: 20px;
+    }
+    .no-users {
+        padding: 30px;
+        text-align: center;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <h1 class="page-title"><i class="fas fa-comments"></i> Chat</h1>
+
+    <div class="chat-layout">
+        <div class="chat-sidebar">
+            <div class="sidebar-title">
+                <i class="fas fa-user-friends"></i> Conversations
+            </div>
+            <div class="chat-users">
+                {% if chat_partners %}
+                    {% for partner in chat_partners %}
+                        <a href="{{ url_for('chat', receiver_id=partner.id) }}" class="chat-user">
+                            <img src="{{ url_for('static', filename='uploads/' + partner.profile_pic) if partner.profile_pic else url_for('static', filename='img/default_profile.jpg') }}" alt="{{ partner.username }}" class="user-avatar">
+                            <div class="user-info">
+                                <div class="user-name">{{ partner.username }}</div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-users">
+                        <i class="fas fa-user-friends fa-2x"></i>
+                        <h3>No conversations yet</h3>
+                        <p>Start a new chat below!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="new-chat">
+                <h3 class="new-chat-title"><i class="fas fa-plus-circle"></i> Start New Chat</h3>
+
+                {% if all_users %}
+                    <form action="{{ url_for('chat', receiver_id=all_users[0].id) }}" method="GET">
+                        <select name="receiver_id" class="user-select" required>
+                            <option value="" disabled selected>Select a user</option>
+                            {% for user in all_users %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn-start-chat">Start Chat</button>
+                    </form>
+                {% else %}
+                    <p>No users available to chat with.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="chat-placeholder">
+            <i class="fas fa-comments placeholder-icon"></i>
+            <h2>Select a conversation</h2>
+            <p>Choose an existing conversation or start a new one!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

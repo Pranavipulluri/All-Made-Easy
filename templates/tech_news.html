@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Tech News | Community App{% endblock %}
+
+{% block additional_head %}
+<style>
+    .news-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .page-title {
+        margin-bottom: 30px;
+        font-size: 28px;
+        color: #333;
+        border-bottom: 2px solid #4a6fdc;
+        padding-bottom: 10px;
+    }
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+    .news-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+    .news-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+    .news-content {
+        padding: 15px;
+    }
+    .news-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+        line-height: 1.3;
+    }
+    .news-source {
+        font-size: 14px;
+        color: #4a6fdc;
+        margin-bottom: 10px;
+    }
+    .news-description {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+    .news-date {
+        font-size: 12px;
+        color: #888;
+    }
+    .read-more {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #4a6fdc;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+    .read-more:hover {
+        background-color: #3a5dc0;
+    }
+    .no-news {
+        text-align: center;
+        padding: 40px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="news-container">
+    <h1 class="page-title"><i class="fas fa-newspaper"></i> Daily Tech News</h1>
+    
+    {% if articles %}
+        <div class="news-grid">
+            {% for article in articles %}
+                <div class="news-card">
+                    {% if article.urlToImage %}
+                        <img src="{{ article.urlToImage }}" alt="{{ article.title }}" class="news-image">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/news_placeholder.jpg') }}" alt="News placeholder" class="news-image">
+                    {% endif %}
+                    <div class="news-content">
+                        <h3 class="news-title">{{ article.title }}</h3>
+                        <p class="news-source">{{ article.source.name }}</p>
+                        <p class="news-description">{{ article.description[:100] }}{% if article.description and article.description|length > 100 %}...{% endif %}</p>
+                        <p class="news-date">{{ article.publishedAt[:10] }}</p>
+                        <a href="{{ article.url }}" target="_blank" class="read-more">Read More</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-news">
+            <i class="fas fa-exclamation-circle fa-3x"></i>
+            <h3>No news available at the moment</h3>
+            <p>Please check back later for the latest tech news.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

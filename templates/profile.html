@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | Community App{% endblock %}
+{% block additional_head %}
+<style>
+    /* (Your existing CSS here) */
+    /* Main color palette */
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #2c3e50;
+      --accent: #e74c3c;
+      --light-bg: #f5f7fa;
+      --text: #333333;
+      --text-light: #7f8c8d;
+      --border: #e0e0e0;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Profile page container */
+    .profile-page {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* Profile header styling */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .profile-avatar {
+      margin-right: 30px;
+    }
+
+    .profile-avatar img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-info h1 {
+      font-size: 2.2rem;
+      margin: 0 0 8px 0;
+      color: var(--secondary);
+    }
+
+    .profile-info p {
+      color: var(--text-light);
+      margin: 0 0 15px 0;
+      font-size: 1rem;
+    }
+
+    /* Buttons styling */
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary i {
+      margin-right: 8px;
+    }
+
+    .btn-secondary {
+      background-color: #f8f9fa;
+      color: var(--secondary);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #e9ecef;
+    }
+
+    .btn-danger {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+
+    /* Profile edit form */
+    .profile-edit-form {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .profile-edit-form h2 {
+      margin-top: 0;
+      color: var(--secondary);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .profile-edit-form h2:after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background-color: var(--primary);
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      transition: border 0.2s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    /* Profile content sections */
+    .profile-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .profile-section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .profile-section h2 {
+      font-size: 1.8rem;
+      color: var(--secondary);
+      margin-top: 0;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .profile-section h2:after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background-color: var(--primary);
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+    }
+
+    .profile-section h2 i {
+      margin-right: 12px;
+      color: var(--primary);
+    }
+
+    /* Empty state styling */
+    .empty-state {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 1.1rem;
+      margin: 40px 0 20px;
+      padding: 30px;
+      background-color: rgba(0,0,0,0.02);
+      border-radius: 8px;
+    }
+
+    /* Content and Bike grids */
+    .content-grid, .bike-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .content-card, .bike-card {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: white;
+    }
+
+    .content-card:hover, .bike-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-card img, .bike-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .content-info, .bike-info {
+      padding: 20px;
+    }
+
+    .content-info h3, .bike-info h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      color: var(--secondary);
+    }
+
+    .content-info p, .bike-info p {
+      margin: 8px 0;
+      color: var(--text);
+    }
+
+    .content-date {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 15px;
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .available {
+      background-color: rgba(39, 174, 96, 0.15);
+      color: var(--success);
+    }
+
+    .rented {
+      background-color: rgba(243, 156, 18, 0.15);
+      color: var(--warning);
+    }
+
+    .unavailable {
+      background-color: rgba(231, 76, 60, 0.15);
+      color: var(--accent);
+    }
+
+    /* Delete form positioning */
+    .delete-form {
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    /* Add Content Button Styling */
+    a.btn-primary {
+      display: block;
+      width: max-content;
+      margin: 20px auto 0;
+      font-size: 1rem;
+    }
+    
+    /* Animation for empty state actions */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .empty-state + a.btn-primary {
+      animation: pulse 2s infinite;
+    }
+
+    .empty-state + a.btn-primary:hover {
+      animation: none;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
+      
+      .content-grid, .bike-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img src="https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-female-user-profile-vector-illustration-isolated-background-women-profile-sign-business-concept_157943-38866.jpg" alt="Profile Picture">
+      </div>
+      <div class="profile-info">
+        <h1>{{ user.username }}</h1>
+        <p>Member since: {{ user.join_date }}</p>
+        <button class="btn-primary" id="edit-profile-btn"><i class="fas fa-edit"></i> Edit Profile</button>
+      </div>
+    </div>
+
+    <div class="profile-edit-form" id="profile-edit-form" style="display: none;">
+      <h2>Edit Profile</h2>
+      <form method="POST" action="/update_profile" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>Profile Picture</label>
+          <input type="file" name="profile_pic" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" name="current_password" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" name="new_password" class="form-control">
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary">Save Changes</button>
+          <button type="button" class="btn-secondary" id="cancel-edit">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="profile-content">
+      <div class="profile-section">
+        <h2><i class="fas fa-share-alt"></i> My Content</h2>
+        {% if user_content %}
+          <div class="content-grid">
+            {% for content in user_content %}
+              <div class="content-card">
+                <img src="{{ content.image_url }}" alt="{{ content.title }}">
+                <div class="content-info">
+                  <h3>{{ content.title }}</h3>
+                  <p>{{ content.description }}</p>
+                  <span class="content-date">{{ content.date }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <i class="fas fa-file-alt" style="font-size: 3rem; color: #ddd; display: block; margin-bottom: 15px;"></i>
+            You haven't shared any content yet.
+          </div>
+        {% endif %}
+        <a href="{{ url_for('add_content') }}" class="btn-primary"><i class="fas fa-plus"></i> Add Content</a>
+      </div>
+
+      <div class="profile-section">
+        <h2><i class="fas fa-bicycle"></i> My Bikes</h2>
+        {% if user_bikes %}
+          <div class="bike-grid">
+            {% for bike in user_bikes %}
+              <div class="bike-card">
+                <img src="{{ bike.image_url }}" alt="{{ bike.name }}">
+                <div class="bike-info">
+                  <h3>{{ bike.name }}</h3>
+                  <p>{{ bike.description }}</p>
+                  <span class="status-badge {{ bike.status.lower() }}">{{ bike.status }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <i class="fas fa-bicycle" style="font-size: 3rem; color: #ddd; display: block; margin-bottom: 15px;"></i>
+            You haven't added any bikes yet.
+          </div>
+        {% endif %}
+        <a href="/add_bike" class="btn-primary"><i class="fas fa-plus"></i> Add Bike</a>
+      </div>
+    </div>
+  </div>
+{% block scripts %}
+<script>
+    document.getElementById('edit-profile-btn').addEventListener('click', function() {
+        document.getElementById('profile-edit-form').style.display = 'block';
+    });
+
+    document.getElementById('cancel-edit').addEventListener('click', function() {
+        document.getElementById('profile-edit-form').style.display = 'none';
+    });
+</script>
+{% endblock %}
+{% endblock %}

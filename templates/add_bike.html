@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block additional_head %}
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.form-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.form-container h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.form-group label i {
+    margin-right: 10px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+.form-text {
+    display: block;
+    margin-top: 5px;
+    color: #6c757d;
+}
+
+.file-input-container {
+    position: relative;
+}
+
+.image-preview {
+    margin-top: 10px;
+    border: 2px dashed #ced4da;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#preview-img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+</style>
+{% endblock %}
+
+{% block title %}Add Bike | Community App{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bike-sharing.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container form-page">
+    <div class="form-container">
+        <h1><i class="fas fa-bicycle"></i> Add Your Bike</h1>
+
+        <form method="POST" action="{{ url_for('add_bike') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="bike_name"><i class="fas fa-signature"></i> Bike Name</label>
+                <input type="text" id="bike_name" name="bike_name" class="form-control"
+                       placeholder="Give your bike a memorable name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="condition"><i class="fas fa-star-half-alt"></i> Condition</label>
+                <select id="condition" name="condition" class="form-control" required>
+                    <option value="">Select condition</option>
+                    <option value="Like New">Like New</option>
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Fair">Fair</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price_per_hour"><i class="fas fa-dollar-sign"></i> Price per Hour ($)</label>
+                <input type="number" id="price_per_hour" name="price_per_hour" step="0.01" min="0"
+                       class="form-control" placeholder="5.00" required>
+                <small class="form-text">Suggested range: $2-$10 per hour</small>
+            </div>
+
+            <div class="form-group">
+                <label for="bike_description"><i class="fas fa-align-left"></i> Description (Optional)</label>
+                <textarea id="bike_description" name="bike_description" class="form-control"
+                          placeholder="Tell others about your bike - type, size, features" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="bike_image"><i class="fas fa-image"></i> Bike Image</label>
+                <div class="file-input-container">
+                    <input type="file" id="bike_image" name="bike_image" class="form-control" accept="image/*">
+                    <div class="image-preview" id="imagePreview">
+                        <img src="#" alt="Image Preview" id="preview-img" style="display: none;">
+                        <p id="no-preview"><i class="fas fa-cloud-upload-alt"></i> Click to upload a photo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Add Bike</button>
+                <a href="{{ url_for('bike_sharing') }}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.getElementById('bike_image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImg = document.getElementById('preview-img');
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                document.getElementById('no-preview').style.display = 'none';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Display filename after selection
+    document.getElementById('bike_image').addEventListener('change', function() {
+        const fileName = this.files[0]?.name;
+        if (fileName) {
+            this.nextElementSibling.textContent = fileName;
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

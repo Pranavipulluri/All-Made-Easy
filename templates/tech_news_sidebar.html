@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech News</title>
+</head>
+<body>
+    <h1>Tech News</h1>
+
+    <div>
+        <h2>Search Results for: "{{ query }}"</h2>
+        <ul>
+            {% for article in news %}
+                <li>
+                    <h3><a href="{{ article.link }}" target="_blank">{{ article.title }}</a></h3>
+                    <p>{{ article.description }}</p>
+                    <p><strong>Published on:</strong> {{ article.pub_date }}</p>
+                    <p><strong>Source:</strong> <a href="{{ article.source_url }}" target="_blank">{{ article.source }}</a></p>
+                    {% if article.image %}
+                        <img src="{{ article.image }}" alt="Image" style="width: 100%; height: auto;">
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        <nav>
+            {% if page > 1 %}
+                <a href="{{ url_for('tech_news', query=query, page=page-1) }}">Previous</a>
+            {% endif %}
+            {% if page < total_pages %}
+                <a href="{{ url_for('tech_news', query=query, page=page+1) }}">Next</a>
+            {% endif %}
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Community | Community App{% endblock %}
+
+{% block additional_head %}
+<style>
+    .community-container {
+        padding: 20px;
+    }
+    
+    .section-title {
+        margin-bottom: 20px;
+        color: #333;
+        border-bottom: 2px solid #4a6fdc;
+        padding-bottom: 10px;
+    }
+    
+    .community-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .user-card {
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .user-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .user-header {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        object-fit: cover;
+        border: 3px solid #4a6fdc;
+    }
+    
+    .user-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .user-joined {
+        font-size: 14px;
+        color: #777;
+    }
+    
+    .user-actions {
+        display: flex;
+        justify-content: space-around;
+        padding: 15px;
+        background-color: #f9f9f9;
+    }
+    
+    .user-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #4a6fdc;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .user-action i {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    
+    .user-action:hover {
+        color: #3a5dc0;
+    }
+    
+    .search-bar {
+        margin-bottom: 20px;
+        display: flex;
+    }
+    
+    .search-input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        font-size: 16px;
+    }
+    
+    .search-btn {
+        padding: 10px 15px;
+        background-color: #4a6fdc;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #777;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="community-container">
+    <h1 class="section-title">Community Members</h1>
+    
+    <div class="search-bar">
+        <input type="text" class="search-input" id="userSearch" placeholder="Search community members...">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+    </div>
+    
+    <div class="community-grid">
+        {% if users %}
+            {% for user in users %}
+            <div class="user-card">
+                <div class="user-header">
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) if user.profile_pic else url_for('static', filename='img/default_profile.jpg') }}" alt="{{ user.username }}" class="user-avatar">
+                    <h3 class="user-name">{{ user.username }}</h3>
+                    <p class="user-joined">Joined: {{ user.date_joined.strftime('%b %d, %Y') }}</p>
+                </div>
+                <div class="user-actions">
+                    <a href="{{ url_for('chat', receiver_id=user.id) }}" class="user-action">
+                        <i class="fas fa-comment"></i>
+                        <span>Message</span>
+                    </a>
+                    <a href="#" class="user-action view-content" data-username="{{ user.username }}">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Content</span>
+                    </a>
+                    <a href="#" class="user-action view-bikes" data-username="{{ user.username }}">
+                        <i class="fas fa-bicycle"></i>
+                        <span>Bikes</span>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-users" style="font-size: 48px; color: #ddd; margin-bottom: 15px;"></i>
+                <p>No community members found.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.getElementById('userSearch');
+        const userCards = document.querySelectorAll('.user-card');
+        
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            userCards.forEach(card => {
+                const username = card.querySelector('.user-name').textContent.toLowerCase();
+                
+                if (username.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // View content and bikes click handlers
+        document.querySelectorAll('.view-content').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const username = this.getAttribute('data-username');
+                alert(`Viewing ${username}'s content will be implemented in a future update.`);
+            });
+        });
+        
+        document.querySelectorAll('.view-bikes').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const username = this.getAttribute('data-username');
+                alert(`Viewing ${username}'s bikes will be implemented in a future update.`);
+            });
+        });
+    });
+</script>
+{% endblock %}

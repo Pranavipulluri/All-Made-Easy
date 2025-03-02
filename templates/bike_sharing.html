@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Bike Sharing | Community App{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bike_sharing.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container bike-sharing-page my-4">
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-bicycle"></i> Community Bike Sharing</h1>
+        <div class="page-actions">
+            <a href="{{ url_for('add_bike') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Your Bike</a>
+        </div>
+    </div>
+
+    <div class="bike-sections">
+        <div class="available-bikes-section">
+            <h2 class="section-title">Available Bikes</h2>
+            {% if bikes %}
+                <div class="bike-grid">
+                    {% for bike in bikes %}
+                        {% if bike.availability_status == 'Available' and bike.user_id != session.user_id %}
+                        <div class="card bike-card mb-4">
+    <div class="card-body">
+                            <img src="{{ url_for('static', filename='uploads/' + bike.image_filename) }}" alt="{{ bike.name }}" style="height: auto; object-fit: cover;">
+                            <div class="bike-details">
+                                <h3>{{ bike.name }}</h3>
+                                <div class="bike-meta">
+                                    <span class="bike-condition"><i class="fas fa-info-circle"></i> {{ bike.condition }}</span>
+                                    <span class="bike-price"><i class="fas fa-tag"></i> ${{ bike.price_per_hour }}/hour</span>
+                                    <span class="bike-owner"><i class="fas fa-user"></i> {{ bike.user.username }}</span>
+                                    <span class="bike-rating">
+                                        <i class="fas fa-star"></i>
+                                        {% if bike.rating %}{{ bike.rating }}/5{% else %}New{% endif %}
+                                    </span>
+                                </div>
+                                <div class="bike-actions d-flex justify-content-between">
+                                    <form method="POST" action="{{ url_for('rent_bike', bike_id=bike.id) }}">
+                                        <div class="rental-hours">
+                                            <label for="rental_hours">Hours:</label>
+                                            <select name="rental_hours" id="rental_hours" class="form-control">
+                                                {% for i in range(1, 9) %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Rent Now</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state bg-light p-4">
+                    <i class="fas fa-bicycle empty-icon"></i>
+                    <h2>No Bikes Available</h2>
+                    <p>No bikes are currently available for rent.</p>
+                    <p class="empty-suggestion">Check back later or add your own bike to share!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="my-bikes-section">
+            <h2 class="section-title">My Bikes</h2>
+            {% if user_bikes %}
+                <div class="bike-grid">
+                    {% for bike in user_bikes %}
+                    <div class="bike-card mb-4">
+                        <img src="{{ url_for('static', filename='uploads/' + bike.image_filename) }}" alt="{{ bike.name }}">
+                        <div class="bike-details">
+                            <h3>{{ bike.name }}</h3>
+                            <div class="bike-meta">
+                                <span class="bike-condition"><i class="fas fa-info-circle"></i> {{ bike.condition }}</span>
+                                <span class="bike-price"><i class="fas fa-tag"></i> ${{ bike.price_per_hour }}/hour</span>
+                                <span class="bike-status">
+                                    <i class="fas fa-circle status-{{ bike.availability_status.lower() }}"></i>
+                                    {{ bike.availability_status }}
+                                </span>
+                                {% if bike.availability_status == 'Rented' %}
+                                <span class="bike-available-in"><i class="fas fa-clock"></i> Available in {{ bike.available_in }} hours</span>
+                                {% endif %}
+                            </div>
+                            <br>
+                            <div class="bike-actions">
+                                <div>
+    <a href="{{ url_for('edit_bike', bike_id=bike.id) }}" class="btn btn-secondary me-2">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <br>
+                                <form method="POST" action="{{ url_for('delete_bike', bike_id=bike.id) }}" onsubmit="return confirm('Are you sure you want to remove this bike?');">
+                                        <form method="POST" action="{{ url_for('delete_bike', bike_id=bike.id) }}" onsubmit="return confirm('Are you sure you want to remove this bike?');">
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Remove</button>
+    </form>
+</div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-bicycle empty-icon"></i>
+                    <h2>No Bikes Added</h2>
+                    <p>You haven't added any bikes to share yet.</p>
+                    <a href="{{ url_for('add_bike') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Your Bike</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

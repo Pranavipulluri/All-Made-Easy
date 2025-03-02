@@ -1,0 +1,14 @@
+<h1>Available Bikes</h1>
+<ul>
+    {% for bike in bikes %}
+    <li>
+        {{ bike.name }} - ${{ bike.price }} 
+        {% if bike.is_available %}
+        <form method="POST" action="{{ url_for('rent_bike', bike_id=bike.id) }}">
+            <button type="submit">Rent</button>
+        </form>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<a href="{{ url_for('upload_bike') }}">Upload a Bike</a>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Community App{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block additional_head %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        {% if session.user_id %}
+        <div class="sidebar">
+            <div class="profile-section">
+                <div class="profile-pic">
+                    <img src="https://img.freepik.com/premium-vector/avatar-profile-icon-flat-style-female-user-profile-vector-illustration-isolated-background-women-profile-sign-business-concept_157943-38866.jpg" alt="Profile Picture">
+                </div>
+                <div class="profile-name">{{ session.username|upper }}</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="{{ url_for('home') }}" class="nav-item {% if request.endpoint == 'home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{{ url_for('profile') }}" class="nav-item {% if request.endpoint == 'profile' %}active{% endif %}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="{{ url_for('job_board') }}" class="nav-item {% if request.endpoint == 'job_board' %}active{% endif %}">
+                    <i class="fas fa-briefcase"></i> Job Board
+                </a>
+                <a href="{{ url_for('learning_center') }}" class="nav-item {% if request.endpoint == 'learning_center' %}active{% endif %}">
+                    <i class="fas fa-book"></i> Learning Center
+                </a>
+                <a href="{{ url_for('community') }}" class="nav-item {% if request.endpoint == 'community' %}active{% endif %}">
+                    <i class="fas fa-users"></i> Community
+                </a>
+                <a href="{{ url_for('bike_sharing') }}" class="nav-item {% if request.endpoint == 'bike_sharing' %}active{% endif %}">
+                    <i class="fas fa-bicycle"></i> Bike Sharing
+                </a>
+                <a href="{{ url_for('tech_news') }}" class="nav-item {% if request.endpoint == 'tech_news' %}active{% endif %}">
+                    <i class="fas fa-newspaper"></i> Daily Tech News
+                </a>
+                <a href="{{ url_for('chat_list') }}" class="nav-item {% if request.endpoint == 'chat_list' or request.endpoint == 'chat' %}active{% endif %}">
+                    <i class="fas fa-comments"></i> Chat
+                </a>
+                <a href="{{ url_for('content_sharing') }}" class="nav-item {% if request.endpoint == 'content_sharing' %}active{% endif %}">
+                    <i class="fas fa-share-alt"></i> Content Sharing
+                </a>
+                <a href="{{ url_for('todo') }}" class="nav-item {% if request.endpoint == 'todo' %}active{% endif %}">
+                    <i class="fas fa-tasks"></i> To-Do List
+                </a>
+                <a href="{{ url_for('logout') }}" class="nav-item logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </div>
+        {% endif %}
+        
+        <div class="main-content {% if not session.user_id %}full-width{% endif %}">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                                <button class="close-btn">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script>
+        // Flash message close functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeButtons = document.querySelectorAll('.close-btn');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.parentElement.style.display = 'none';
+                });
+            });
+            
+            // Auto-hide flash messages after 5 seconds
+            setTimeout(function() {
+                const flashMessages = document.querySelectorAll('.alert');
+                flashMessages.forEach(msg => {
+                    msg.style.display = 'none';
+                });
+            }, 5000);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

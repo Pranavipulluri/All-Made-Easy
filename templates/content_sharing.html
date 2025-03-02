@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Content Sharing{% endblock %}
+
+{% block additional_head %}
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-header h1 {
+    margin: 0;
+    color: #333;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
+}
+
+.btn-outline:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.content-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+}
+
+.content-card h2 {
+    margin-top: 0;
+    color: #007bff;
+}
+
+.content-card img {
+    max-width: 100%;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.content-actions {
+    margin-top: 10px;
+}
+
+.no-content {
+    text-align: center;
+    padding: 50px;
+    color: #6c757d;
+}
+
+.empty-state-icon {
+    margin-bottom: 20px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #dc3545;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1>Community Content</h1>
+    <div class="action-buttons">
+        <a href="{{ url_for('add_content') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Content
+        </a>
+        <a href="{{ url_for('my_content') }}" class="btn btn-secondary">
+            <i class="fas fa-user"></i> My Content
+        </a>
+        
+    </div>
+</div>
+
+{% if contents %}
+<div class="content-grid">
+    {% for content in contents %}
+    <div class="content-card">
+        <!-- Content details here -->
+        <h2>{{ content.title }}</h2>
+        <p>{{ content.description }}</p>
+        <img src="{{ url_for('static', filename='uploads/' + content.image_filename) }}" alt="{{ content.title }}">
+        <p><strong>Shared by:</strong> {{ content.user.username }}</p>
+        <div class="content-actions">
+            <button class="btn btn-share" data-content-id="{{ content.id }}">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="no-content">
+    <div class="empty-state-icon">
+        <i class="fas fa-file-alt fa-5x" style="color: #e0e0e0;"></i>
+    </div>
+    <h2>No Content Available</h2>
+    <p>Be the first to share content with the community!</p>
+    <a href="{{ url_for('add_content') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Content
+    </a>
+</div>
+{% endif %}
+
+<!-- Share Modal -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Share Content</h2>
+        <form id="shareForm" method="POST" action="{{ url_for('share_content') }}">
+            <input type="hidden" id="contentId" name="content_id" value="">
+            <label for="receiver">Select User:</label>
+            <select id="receiver" name="receiver_id" required>
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Share</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Open the modal and set the content ID
+    document.querySelectorAll('.btn-share').forEach(button => {
+        button.addEventListener('click', function() {
+            const contentId = this.getAttribute('data-content-id');
+            document.getElementById('contentId').value = contentId;
+            document.getElementById('shareModal').style.display = 'block';
+        });
+    });
+
+    // Close the modal
+    document.querySelector('.close-button').addEventListener('click', function() {
+        document.getElementById('shareModal').style.display = 'none';
+    });
+
+    // Close the modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('shareModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

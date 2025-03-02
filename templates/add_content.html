@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Add Content | Community App{% endblock %}
+
+{% block additional_head %}
+<style>
+    /* add_content.css */
+
+.form-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.form-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #4a6fdc;
+}
+
+.image-preview {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 200px; /* Adjust the height as needed */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+    border-bottom: 1px solid #ddd;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.form-buttons .btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form-buttons .btn-primary {
+    background-color: #4a6fdc;
+    color: #fff;
+    border: none;
+}
+
+.form-buttons .btn-primary:hover {
+    background-color: #3a5dc0;
+}
+
+.form-buttons .btn-secondary {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+}
+
+.form-buttons .btn-secondary:hover {
+    background-color: #bbb;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-container">
+        <h1>Share New Content</h1>
+        <form method="POST" action="{{ url_for('add_content') }}" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="5" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" id="image" name="image" class="form-control" required accept="image/*">
+                <div class="image-preview" id="imagePreview">
+                    <img src="#" alt="Image Preview" id="preview-img" style="display: none;">
+                    <p id="no-preview">No image selected</p>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Share Content</button>
+                <a href="{{ url_for('content_sharing') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.getElementById('image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImg = document.getElementById('preview-img');
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                document.getElementById('no-preview').style.display = 'none';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

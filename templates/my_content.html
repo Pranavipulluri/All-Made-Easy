@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}My Content | Community App{% endblock %}
+
+{% block additional_head %}
+<style>
+    /* my_content.css */
+
+.my-content-page {
+    padding: 20px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.page-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.page-actions .btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.page-actions .btn i {
+    margin-right: 5px;
+}
+
+.content-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.content-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.content-image img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.content-details {
+    padding: 15px;
+}
+
+.content-details h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.content-description {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.content-meta {
+    font-size: 0.9rem;
+    color: #999;
+    margin-bottom: 15px;
+}
+
+.content-meta i {
+    margin-right: 5px;
+}
+
+.content-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.content-actions form {
+    margin: 0;
+}
+
+.content-actions .btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.content-actions .btn i {
+    margin-right: 5px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+}
+
+.empty-state .empty-icon {
+    font-size: 3rem;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.empty-state h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.empty-state .btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.empty-state .btn i {
+    margin-right: 5px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="my-content-page">
+    <div class="page-header">
+        <h1>My Content</h1>
+        <div class="page-actions">
+            <a href="{{ url_for('add_content') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Content</a>
+            <a href="{{ url_for('content_sharing') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to All Content</a>
+        </div>
+    </div>
+
+    <div class="content-gallery">
+        {% if contents %}
+            {% for content in contents %}
+            <div class="content-card">
+                <div class="content-image">
+                    <img src="{{ url_for('static', filename='uploads/' + content.image_filename) }}" width="200px" alt="{{ content.title }}">
+                </div>
+                <div class="content-details">
+                    <h2>{{ content.title }}</h2>
+                    <p class="content-description">{{ content.description }}</p>
+                    <div class="content-meta">
+                        <span class="content-date"><i class="fas fa-calendar"></i> {{ content.created_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                    <div class="content-actions">
+                        <form method="POST" action="{{ url_for('delete_content', content_id=content.id) }}">
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-share-alt empty-icon"></i>
+                <h2>No Content Yet</h2>
+                <p>You haven't shared any content with the community yet.</p>
+                <a href="{{ url_for('add_content') }}" class="btn btn-primary">Add Content</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

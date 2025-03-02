@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Community App{% endblock %}
+
+{% block additional_head %}
+<style>
+    .dashboard {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 20px;
+    }
+
+    .dashboard-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        font-size: 1.5rem;
+    }
+
+    .card-header i {
+        margin-right: 10px;
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+
+    .content-grid, .bike-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .content-item, .bike-item {
+        text-align: center;
+    }
+
+    .content-item img, .bike-item img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    .content-item h4, .bike-item h4 {
+        font-size: 1.2rem;
+        margin: 10px 0;
+    }
+
+    .content-author, .bike-price, .bike-owner {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .task-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .task-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+
+    .task-item.completed {
+        text-decoration: line-through;
+        color: #28a745;
+    }
+
+    .task-item.missed {
+        color: #dc3545;
+    }
+
+    .news-item {
+        margin-bottom: 20px;
+    }
+
+    .news-item h4 {
+        margin-top: 0;
+        font-size: 1.2rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    .view-all {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 1rem;
+    }
+
+    .view-all:hover {
+        text-decoration: underline;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome, {{ user.username }}!</h1>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3><i class="fas fa-share-alt"></i> Latest Content</h3>
+                <a href="{{ url_for('content_sharing') }}" class="view-all">View All</a>
+            </div>
+            <div class="card-content">
+                {% if contents %}
+                    <div class="content-grid">
+                        {% for content in contents %}
+                        <div class="content-item">
+                            <img src="{{ url_for('static', filename='uploads/' + content.image_filename) }}" alt="{{ content.title }}">
+                            <h4>{{ content.title }}</h4>
+                            <p class="content-author">By {{ content.user.username }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-state">No content available yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3><i class="fas fa-bicycle"></i> Available Bikes</h3>
+                <a href="{{ url_for('bike_sharing') }}" class="view-all">View All</a>
+            </div>
+            <div class="card-content">
+                {% if bikes %}
+                    <div class="bike-grid">
+                        {% for bike in bikes %}
+                        <div class="bike-item">
+                            <img src="{{ url_for('static', filename='uploads/' + bike.image_filename) }}" alt="{{ bike.name }}">
+                            <h4>{{ bike.name }}</h4>
+                            <p class="bike-price">${{ bike.price_per_hour }}/hour</p>
+                            <p class="bike-owner">By {{ bike.user.username }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-state">No bikes available right now.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3><i class="fas fa-tasks"></i> Upcoming Tasks</h3>
+                <a href="{{ url_for('todo') }}" class="view-all">View All</a>
+            </div>
+            <div class="card-content">
+                {% if tasks %}
+                    <ul class="task-list">
+                        {% for task in tasks %}
+                        <li class="task-item {% if task.status == 'Completed' %}completed{% elif task.status == 'Missed' %}missed{% endif %}">
+                            <span class="task-name">{{ task.name }}</span>
+                            <span class="task-due">Due: {{ task.due_date.strftime('%b %d, %Y') }}</span>
+                            <span class="task-category">{{ task.category }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="empty-state">No upcoming tasks.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h3><i class="fas fa-bullhorn"></i> Community News</h3>
+            </div>
+            <div class="card-content">
+                <div class="news-item">
+                    <h4>New Job Board Feature</h4>
+                    <p>Check out our new job board where you can find and post job opportunities!</p>
+                </div>
+                <div class="news-item">
+                    <h4>Tech Meetup This Weekend</h4>
+                    <p>Join us for a tech meetup this weekend. All community members are welcome!</p>
+                </div>
+                <div class="news-item">
+                    <h4>New Learning Resources</h4>
+                    <p>We've added new tutorials to our learning center. Start learning today!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
