@@ -166,4 +166,4 @@ community-hub/
 
 ## Contact
 
-For questions or support, please contact [your-email@example.com](mailto:pulluripranavi@gmail.com)
+For questions or support, please contact [pulluripranavi](mailto:pulluripranavi@gmail.com)
